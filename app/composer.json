@@ -1,0 +1,10 @@
+{
+  "autoload": {
+    "psr-4": {
+      "app\\":"./"
+    }
+  },
+  "require": {
+    "guzzlehttp/psr7": "^2.4"
+  }
+}
