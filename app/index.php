@@ -20,3 +20,5 @@ $router->registerRoute('/products',app\Controller\ProductController::class,'GET'
 
 echo $router->resolve();
 
+
+
