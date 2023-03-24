@@ -6,8 +6,6 @@ use app\Routing\Router;
 
 header('Content-Type: application/json; charset=utf-8');
 
-//var_dump($_SERVER);
-
 
 $router = new Router();
 
