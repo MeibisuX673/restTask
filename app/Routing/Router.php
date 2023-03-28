@@ -31,15 +31,17 @@ class Router
 
         $route = $request->getUri()->getPath();
 
+        $method = $request->getMethod();
+
         $param = explode('/',$route);
+
         if(array_key_exists(2,$param) && is_numeric($param[2])){
             $this->replaceRoute($request);
         }
 
-        $method = $request->getMethod();
-
         $className = $this->routs[$method][$route] ?? null;
 
+        
         if($className != null){
 
             $container = new Container();
@@ -56,17 +58,34 @@ class Router
     private function replaceRoute(Request $request){
 
         $path = $request->getUri()->getPath();
-
         $param = explode('/',$path);
+        unset($param[0]);
 
-        foreach ($this->routs[$request->getMethod()] as $key=>$value){
-            preg_match("/\/$param[1]\/{[a-zA-Z]+}/",$key,$matches);
+        $reg = "";
+        foreach ($param as $value){
+
+            if(is_numeric($value)){
+
+                $value = "{[a-zA-Z_]+}";
+            }
+            $reg .= '\/'.$value;
+
         }
 
-        $newRoute = preg_replace('/{[a-zA-Z]+}/',$param[2],$matches[0]);
+        $reg = '/'.$reg.'/';
 
-        $this->routs[$request->getMethod()][$newRoute]=$this->routs[$request->getMethod()][$matches[0]];
-        unset($this->routs[$request->getMethod()][$matches[0]]);
+        foreach ($this->routs[$request->getMethod()] as $key=>$value){
+
+            $newRoute = preg_replace($reg,$path,$key,-1,$count);
+
+            if($count != 0){
+                $oldRoute = $key;
+                break;
+            }
+        }
+
+        $this->routs[$request->getMethod()][$newRoute]=$this->routs[$request->getMethod()][$oldRoute];
+        unset($this->routs[$request->getMethod()][$oldRoute]);
 
         $_GET[$param[1].'_id'] = intval($param[2]);
 

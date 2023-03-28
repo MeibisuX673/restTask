@@ -4,7 +4,6 @@ namespace app\Entity;
 
 class Product
 {
-    private string $table_name = 'products';
 
     public int $id;
 
@@ -13,6 +12,7 @@ class Product
     public string $data_create;
     public string $data_update;
 
+    public int $brend_id;
 
 
 }

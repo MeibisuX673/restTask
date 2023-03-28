@@ -17,10 +17,18 @@ class ProductCreateController
 
     public function __invoke(){
 
-        if(array_key_exists('name',$_POST)){
+        if(array_key_exists('name',$_POST) && array_key_exists('brend',$_POST)){
 
-            $name = $_POST['name'];
+            if(!is_numeric($_POST['brend'])){
+                http_response_code(400);
+                return json_encode(['status'=>'400','message'=>' Bad Request']);
+            }
+            $brendid = intval($_POST['brend'],10);
+
         }
+
+        $name = $_POST['name'];
+        $brendid = $_POST['brend'];
 
         if(mb_strlen($name)==0){
 
@@ -28,7 +36,7 @@ class ProductCreateController
             return json_encode(['status'=>'400','message'=>' Bad Request']);
         }
 
-        $created = $this->productService->create($name);
+        $created = $this->productService->create($name,$brendid);
 
         if($created){
             http_response_code(201);

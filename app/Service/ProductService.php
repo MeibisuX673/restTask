@@ -41,7 +41,8 @@ class ProductService
                 'name' => $row['name'],
                 'extarnal_id' => $row['extarnalid'],
                 'data_create' => $row['datacreate'],
-                'data_update' => $row['dataupdate']
+                'data_update' => $row['dataupdate'],
+                'brend_id'=>$row['brendid']
             ];
 
             array_push($products_collection['products'], $product_item);
@@ -52,10 +53,20 @@ class ProductService
 
     }
 
-    public function create(string $name): bool{
+    public function create(string $name, int $brendId): bool{
 
-        $sql = "INSERT INTO products (name,extarnalid,datacreate,dataupdate)
-                VALUES (:name, :extarnalid, :datacreate, :dataupdate)";
+        $sql = "INSERT INTO products (name,extarnalid,datacreate,dataupdate,brendid)
+                VALUES (:name, :extarnalid, :datacreate, :dataupdate, :brendid)";
+
+        $sqlCheckBrend = "SELECT * FROM brends WHERE id=$brendId";
+
+        $stmtCheckBrend = $this->conn->prepare($sqlCheckBrend);
+
+        $stmtCheckBrend->execute();
+
+        if($stmtCheckBrend->rowCount()==0){
+            return false;
+        }
 
         $stmt = $this->conn->prepare($sql);
 
@@ -64,11 +75,13 @@ class ProductService
         $product->extarnal_id = hash('sha256',str_shuffle("urgf74t23542shufrd242433t2"));
         $product->data_create = date('Y-m-d');
         $product->data_update = date('Y-m-d');
+        $product->brend_id = $brendId;
 
         $stmt->bindParam(":name", $product->name);
         $stmt->bindParam(":extarnalid", $product->extarnal_id);
         $stmt->bindParam(":datacreate", $product->data_create);
         $stmt->bindParam(":dataupdate", $product->data_update);
+        $stmt->bindParam(":brendid", $product->brend_id);
 
         if ($stmt->execute()) {
 
@@ -79,7 +92,7 @@ class ProductService
 
     }
 
-    public function getById($id): Product|null{
+    public function getById(int $id): Product|null{
 
         $sql = "SELECT * FROM products WHERE id= ?";
 
@@ -104,6 +117,49 @@ class ProductService
         }
 
         return null;
+
+    }
+
+    public function setPutById(int $id, string $name): bool{
+
+        $sql = "UPDATE products
+                SET name=:name,dataupdate=:data_update WHERE id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $date = date('Y-m-d');
+
+        $stmt->bindParam(':name',$name);
+        $stmt->bindParam(':id',$id);
+        $stmt->bindParam(':data_update', $date);
+
+        if ($stmt->execute()) {
+
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public function setPatchById(int $id, string $name): bool{
+
+        $sql = "UPDATE products 
+                SET name=:name,dataupdate=:date WHERE id=:id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $date = date('Y-m-d');
+
+        $stmt->bindParam(':id',$id);
+        $stmt->bindParam(':name',$name);
+        $stmt->bindParam(':date',$date);
+
+        if($stmt->execute()){
+            return true;
+        }
+
+        return false;
 
     }
 }
