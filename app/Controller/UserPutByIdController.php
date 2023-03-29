@@ -35,22 +35,22 @@ class UserPutByIdController
 
         $data = $this->getData($file);
 
-        if(count($data)==2){
+        if(!count($data)==2){
             http_response_code(400);
             return json_encode(['status'=>'400','message'=>'Bad Request']);
         }
 
-        if(!array_key_exists('first_name',$data) || !array_key_exists('last_name',$data)){
-            http_response_code(400);
-            return json_encode(['status'=>'400','message'=>'Bad 2Request']);
-        }
-
-        if(mb_strlen($data['first_name'])==0 || mb_strlen($data['last_name'])==0){
+        if(!array_key_exists('firstName',$data) || !array_key_exists('lastName',$data)){
             http_response_code(400);
             return json_encode(['status'=>'400','message'=>'Bad Request']);
         }
 
-        $updated = $this->userService->setPutById($id,$data['first_name'],$data['last_name']);
+        if(mb_strlen($data['firstName'])==0 || mb_strlen($data['lastName'])==0){
+            http_response_code(400);
+            return json_encode(['status'=>'400','message'=>'Bad Request']);
+        }
+
+        $updated = $this->userService->setPutById($id,$data['firstName'],$data['lastName']);
 
         if($updated){
             http_response_code(200);

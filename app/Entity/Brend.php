@@ -2,10 +2,6 @@
 
 namespace app\Entity;
 
-class Brend
+class Brend extends BaseEntity
 {
-    public int $id;
-
-    public string $name;
-
 }

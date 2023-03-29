@@ -26,7 +26,7 @@ class ProductByIdController
         }
 
         http_response_code(404);
-        return json_encode(['status'=>'404','message'=>'Product not found']);
+        return json_encode(['message'=>'Product not found']);
 
     }
 

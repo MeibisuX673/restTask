@@ -17,8 +17,9 @@ class ProductController
 
     public function __invoke()
     {
+        $brendId = array_key_exists('brendId',$_GET) ? $_GET['brendId']: null;
 
-        $collection = $this->productService->getCollection();
+        $collection = $this->productService->getCollection($brendId);
 
         if(count($collection) > 0){
             return json_encode($collection);

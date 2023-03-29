@@ -3,7 +3,6 @@
 namespace app\Controller;
 
 
-use app\Entity\Product;
 use app\Service\ProductService;
 
 class ProductCreateController
@@ -23,8 +22,10 @@ class ProductCreateController
                 http_response_code(400);
                 return json_encode(['status'=>'400','message'=>' Bad Request']);
             }
-            $brendid = intval($_POST['brend'],10);
 
+        }else{
+            http_response_code(400);
+            return json_encode(['message'=>' Bad Request']);
         }
 
         $name = $_POST['name'];

@@ -6,7 +6,7 @@ use app\Config\Database;
 use app\Entity\Brend;
 use PDO;
 
-class BrendService
+class BrendService implements InterfaceService
 {
     public function __construct(
         Database $conn
@@ -76,7 +76,7 @@ class BrendService
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             $brend = new Brend();
-            $brend->id = $row['id'];
+            $brend->setId($row['id']);
             $brend->name = $row['name'];
 
             return $brend;
@@ -87,7 +87,7 @@ class BrendService
 
     }
 
-    public function setPutById(int $id, mixed $name)
+    public function setPutById(int $id, string $name)
     {
         $sql = "UPDATE brends
                 SET name=:name WHERE id=:id";
@@ -119,43 +119,6 @@ class BrendService
             return true;
         }
         return false;
-
-    }
-
-    public function getCollectionProducts(int $id): array
-    {
-        $sql = "SELECT p.id,p.name, p.extarnalid,p.datacreate,p.dataupdate FROM products AS p 
-                INNER JOIN brends AS b ON p.brendid=$id";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute();
-
-        $numRow = $stmt->rowCount();
-
-        if($numRow<=0){
-            echo json_encode(['message'=>'not found']);
-        }
-
-        $products_collection = array();
-        $products_collection["products"] = array();
-
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-            $product_item = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'extarnal_id' => $row['extarnalid'],
-                'data_create' => $row['datacreate'],
-                'data_update' => $row['dataupdate'],
-                'brend_id'=>$id
-            ];
-
-            array_push($products_collection['products'], $product_item);
-
-        }
-
-        return $products_collection;
 
     }
 

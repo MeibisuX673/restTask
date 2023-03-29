@@ -17,16 +17,20 @@ class UserCreateController
 
     public function __invoke()
     {
-        if(array_key_exists('first_name',$_POST) && array_key_exists('last_name',$_POST)){
+        if(array_key_exists('firstName',$_POST) && array_key_exists('lastName',$_POST)){
 
-            $firstName = $_POST['first_name'];
-            $lastName = $_POST['last_name'];
+            $firstName = $_POST['firstName'];
+            $lastName = $_POST['lastName'];
 
             if(is_numeric($firstName) || is_numeric($lastName)){
                 http_response_code(400);
                 return json_encode(['status'=>'400','message'=>' Bad Request']);
             }
 
+        }else{
+
+            http_response_code(400);
+            return json_encode(['status'=>'400','message'=>' Bad Request']);
         }
 
         if(mb_strlen($firstName)==0 && mb_strlen($lastName)==0){

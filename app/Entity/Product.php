@@ -2,17 +2,13 @@
 
 namespace app\Entity;
 
-class Product
+
+
+class Product extends BaseEntity
 {
+    public string $extarnalId;
 
-    public int $id;
-
-    public string $name;
-    public string $extarnal_id;
-    public string $data_create;
-    public string $data_update;
-
-    public int $brend_id;
+    public int $brendId;
 
 
 }

@@ -9,7 +9,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 $router = new Router();
 
-
 $router->registerRoute('/products',app\Controller\ProductController::class,'GET')
         ->registerRoute("/products",app\Controller\ProductCreateController::class,'POST')
         ->registerRoute("/products/{id}",\app\Controller\ProductByIdController::class,'GET')
@@ -17,7 +16,6 @@ $router->registerRoute('/products',app\Controller\ProductController::class,'GET'
         ->registerRoute("/products/{id}",\app\Controller\ProductPatchByIdController::class, 'PATCH')
         ->registerRoute('/brends',app\Controller\BrendController::class,'GET')
         ->registerRoute('/brends/{id}',app\Controller\BrendByIdController::class,'GET')
-        ->registerRoute('/brends/{id}/products',app\Controller\BrendsProductCollectionController::class,'GET')
         ->registerRoute('/brends',app\Controller\BrendCreateController::class,'POST')
         ->registerRoute('/brends/{id}',app\Controller\BrendPutByIdController::class,'PUT')
         ->registerRoute('/brends/{id}',app\Controller\BrendPatchByIdController::class,'PATCH')

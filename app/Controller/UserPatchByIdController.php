@@ -19,7 +19,7 @@ class UserPatchByIdController
     {
 
         $id = $_GET['users_id'];
-        $trueKeys = ['first_name','last_name'];
+        $trueKeys = ['firstName','lastName'];
 
         $user = $this->userService->getById($id);
 
@@ -42,8 +42,6 @@ class UserPatchByIdController
             http_response_code(400);
             return json_encode(['status'=>'400','message'=>'Bad Request']);
         }
-
-
 
         foreach ($data as $key=>$value){
 

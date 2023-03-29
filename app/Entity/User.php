@@ -2,10 +2,8 @@
 
 namespace app\Entity;
 
-class User
+class User extends BaseEntity
 {
-
-    public int $id;
     public string $firstName;
     public  string $lastName;
 

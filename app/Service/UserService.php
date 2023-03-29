@@ -6,7 +6,7 @@ use app\Config\Database;
 use app\Entity\User;
 use PDO;
 
-class UserService
+class UserService implements InterfaceService
 {
 
     public function __construct
@@ -88,7 +88,7 @@ class UserService
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             $user = new User();
-            $user->id = $row['id'];
+            $user->setId($row['id']);
             $user->firstName = $row['firstname'];
             $user->lastName = $row['lastname'];
 

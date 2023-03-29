@@ -6,7 +6,7 @@ use app\Config\Database;
 use app\Entity\Product;
 use PDO;
 
-class ProductService
+class ProductService implements InterfaceService
 {
     public function __construct(
         Database $conn
@@ -15,9 +15,15 @@ class ProductService
         $this->conn = $conn->getConnection();
     }
 
-    public function getCollection(): array{
+    public function getCollection(?int $brendId): array{
 
         $sql = "SELECT * FROM products";
+
+        if($brendId != null){
+
+            $sql = "SELECT p.id,p.name, p.extarnalid,p.datacreate,p.dataupdate,p.brendid FROM products AS p 
+                INNER JOIN brends AS b ON p.brendid=b.id WHERE p.brendid = $brendId";
+        }
 
         $stmt = $this->conn->prepare($sql);
 
@@ -26,15 +32,13 @@ class ProductService
         $numRow = $stmt->rowCount();
 
         if($numRow<=0){
-            echo json_encode(['message'=>'not found']);
+            return array();
         }
 
         $products_collection = array();
         $products_collection["products"] = array();
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-            // var_dump($row);
 
             $product_item = [
                 'id' => $row['id'],
@@ -47,8 +51,8 @@ class ProductService
 
             array_push($products_collection['products'], $product_item);
 
-
         }
+
         return $products_collection;
 
     }
@@ -72,16 +76,18 @@ class ProductService
 
         $product = new Product();
         $product->name = $name;
-        $product->extarnal_id = hash('sha256',str_shuffle("urgf74t23542shufrd242433t2"));
-        $product->data_create = date('Y-m-d');
-        $product->data_update = date('Y-m-d');
-        $product->brend_id = $brendId;
+        $product->extarnalId = hash('sha256',str_shuffle("urgf74t23542shufrd242433t2"));
+        $product->dataCreate = new \DateTime("now");
+        $product->dataUpdate = new \DateTime("now");
+        $product->brendId = $brendId;
+
+        $data = $product->dataCreate->format('Y-m-d');
 
         $stmt->bindParam(":name", $product->name);
-        $stmt->bindParam(":extarnalid", $product->extarnal_id);
-        $stmt->bindParam(":datacreate", $product->data_create);
-        $stmt->bindParam(":dataupdate", $product->data_update);
-        $stmt->bindParam(":brendid", $product->brend_id);
+        $stmt->bindParam(":extarnalid", $product->extarnalId);
+        $stmt->bindParam(":datacreate", $data);
+        $stmt->bindParam(":dataupdate", $data);
+        $stmt->bindParam(":brendid", $product->brendId);
 
         if ($stmt->execute()) {
 
@@ -94,6 +100,7 @@ class ProductService
 
     public function getById(int $id): Product|null{
 
+
         $sql = "SELECT * FROM products WHERE id= ?";
 
         $stmt = $this->conn->prepare($sql);
@@ -105,13 +112,13 @@ class ProductService
         if($stmt->rowCount()>0){
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
             $product = new Product();
-            $product->id = $row['id'];
+            $product->setId($row['id']);
             $product->name = $row['name'];
             $product->extarnal_id = $row['extarnalid'];
             $product->data_create = $row['datacreate'];
             $product->data_update = $row['dataupdate'];
+
 
             return $product;
         }
